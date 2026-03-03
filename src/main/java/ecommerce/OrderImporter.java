@@ -21,7 +21,7 @@ public class OrderImporter {
         // TODO: Use try-with-resources to create a BufferedReader using Files.newBufferedReader(filePath).
         // TODO: Catch the broad IOException and throw a FileProcessingException, ensuring you chain the original exception as the cause.
 
-        // TODO: Use a while loop to read the file line-by-line.
+        // TODO: Use a while loop to read the file line by line.
         // TODO: INSIDE the loop, use a narrow try-catch block to implement the "Partial Success" pattern.
 
         // TODO: Split the line by commas. If fields are missing (less than 4 parts), throw InvalidOrderLineException.
