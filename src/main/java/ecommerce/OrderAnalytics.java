@@ -10,7 +10,7 @@ public class OrderAnalytics {
         // TODO: Start a stream() from the 'orders' list.
         // TODO: Chain operations to: map to email -> lowercase -> distinct -> sorted.
         // TODO: Collect the final results into a List.
-        return null;
+        return List.of(); // Returns an empty list so Main.java doesn't crash
     }
     /**
      * Requirement: Tally the total number of orders for each product name.
@@ -19,6 +19,6 @@ public class OrderAnalytics {
     public Map<String, Long> countOrdersByProduct(List<Order> orders) {
         // TODO: Use a Stream and Collectors.groupingBy to organize orders by product name.
         // TODO: Use Collectors.counting() as the downstream collector to get the count for each group.
-        return null;
+        return Map.of(); // Returns an empty map
     }
 }

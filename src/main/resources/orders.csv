@@ -1,0 +1,8 @@
+orderId,product,quantity,email
+101,Laptop,1,alice@nyu.edu
+102,Smartphone,5,bob@nyu.edu
+103,Smartphone,-5,charlie@nyu.edu
+104,Laptop,2,ALICE@nyu.edu
+105,Laptop,10,out_of_stock@nyu.edu
+106,Laptop,150,fraud@nyu.edu
+107,Headphones,1,missing_product@nyu.edu
