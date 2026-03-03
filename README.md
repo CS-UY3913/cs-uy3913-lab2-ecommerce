@@ -90,7 +90,7 @@ This class is responsible for reading **"dirty" CSV data** from `src/main/resour
 
 #### The Loop (Partial Success)
 
-- **Skip Header:** Call `reader.readLine()` once before entering the loop to skip the CSV header row.
+
 - Read the remaining file line by line.
 - Use a narrow `try-catch` block inside the loop to catch `InvalidOrderLineException`.
 
