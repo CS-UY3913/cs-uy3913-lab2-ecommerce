@@ -2,11 +2,11 @@
 
 ## Objective
 
-This lab focuses on building a robust data processing pipeline using the Java Collections Framework and professional error-handling patterns. You will apply the **"Partial Success" pattern** to ensure that individual data errors do not crash an entire batch process.
+This lab focuses on building a robust data processing pipeline using the Java Collections Framework and professional error handling patterns. You will apply the **"Partial Success" pattern** to ensure that individual data errors do not crash an entire batch process.
 
 By the end of this lab, you will be able to:
 
-* Implement custom, state-bearing unchecked exceptions.
+* Implement custom, state bearing unchecked exceptions.
 * Apply Exception Chaining to preserve root causes during rethrowing.
 * Use `Map` for efficient lookups and `Queue` for FIFO processing.
 * Utilize `Iterator` to safely modify collections during traversal.
@@ -62,7 +62,7 @@ src/main/java/ecommerce/exceptions/
 #### `InvalidOrderLineException.java`
 
 * Must extend `RuntimeException`.
-* Store a private `orderId`.
+* Store a private `orderId` of the failed row.
 * Provide a getter for it.
 
 #### `FileProcessingException.java`
@@ -80,7 +80,7 @@ src/main/java/ecommerce/exceptions/
 
 ### Step 1: Implement `OrderImporter.java`
 
-This class is responsible for reading **"dirty" CSV data**.
+This class is responsible for reading **"dirty" CSV data** from src/main/resources/orders.csv.
 
 #### Try-with-resources
 
@@ -88,7 +88,7 @@ This class is responsible for reading **"dirty" CSV data**.
 * Catch `IOException` and rethrow it as `FileProcessingException`.
 * Pass the original error as the cause.
 
-#### The Loop
+#### The Loop (Partial Success)
 
 * Read the file line by line.
 * Use a narrow try catch inside the loop.
@@ -117,7 +117,7 @@ This class is responsible for reading **"dirty" CSV data**.
 
 #### Add Stock
 
-* Use `getOrDefault()` to safely increment stock for new or existing products.
+* Use `getOrDefault()` to safely increment stock for new or existing products without NullPointerExceptions.
 
 #### Fulfillment
 
@@ -158,7 +158,7 @@ fulfill(Order order)
 Use a Stream pipeline:
 
 ```
-map -> distinct -> sorted
+map -> lowercase -> distinct -> sorted
 ```
 
 * Return lowercase emails.
@@ -178,7 +178,21 @@ Return a `Map` of product names and their order counts.
 
 ## Section 6: Part 5 – Testing & Submission
 
-### Step 1: Run Local Tests
+### Step 1: Run the Main Application
+
+Open Main.java and click the green "Run" arrow. This file demonstrates the full end to end data pipeline. If implemented correctly, your console should display the following:
+
+```
+==========================================
+        FINAL DEMAND REPORT              
+==========================================
+Successfully Fulfilled IDs: [101, 102, 104]
+Unique Customer Base (4): [alice@nyu.edu, bob@nyu.edu, missing_product@nyu.edu, out_of_stock@nyu.edu]
+Total Demand by Product: {Headphones=1, Laptop=3, Smartphone=1}
+==========================================
+```
+
+### Step 2: Run Local Unit Tests
 
 A basic test suite (`BulkProcessorTest.java`) is provided.
 
@@ -196,9 +210,9 @@ Tests run: 4, Failures: 0, Errors: 0, BUILD SUCCESS
 
 *(Total test count may vary depending on implementation.)*
 
-### Step 2: Create Submission ZIP
+### Step 3: Create Submission ZIP
 
-Run this command from your project root:
+Run this command from your project root and upload to Gradescope:
 
 ```bash
 zip -r submission.zip src/ pom.xml
@@ -220,10 +234,13 @@ cs-uy3913-lab2-ecommerce/
     │   │   ├── FileProcessingException.java
     │   │   └── InvalidOrderLineException.java
     │   ├── InventoryManager.java
+    │   ├── Main.java                          ← Entry point (Do not modify)
     │   ├── Order.java (Record)
     │   ├── OrderAnalytics.java
     │   ├── OrderImporter.java
     │   └── OrderProcessor.java
+    ├── main/resources/
+    │   └── orders.csv                         ← Sample data
     └── test/java/ecommerce/
         └── BulkProcessorTest.java
 ```
@@ -244,27 +261,27 @@ cs-uy3913-lab2-ecommerce/
 ## Section 8: Submission Checklist & Grading
 
 ### Submission Checklist
-
-*  Package Names: All `.java` files include `package ecommerce;` (or `package ecommerce.exceptions;`).
-*  Exception State: `InvalidOrderLineException` correctly stores the `orderId`.
-*  Partial Success: The importer logs a warning and continues if an individual line is invalid.
-*  Iterator Use: Fraud removal uses an explicit `Iterator` to avoid errors.
-*  ZIP Structure: Your ZIP contains only the `src/` folder and `pom.xml`.
+* [ ] **Package Names**: All `.java` files include `package ecommerce;` (or `package ecommerce.exceptions;`).
+* [ ] **Exception State**: `InvalidOrderLineException` correctly stores the `orderId`.
+* [ ] **Partial Success**: The importer logs a warning and continues if an individual line is invalid.
+* [ ] **Iterator Use**: Fraud removal uses an explicit `Iterator` to avoid errors.
+* [ ] **Main Application**: Running `Main.java` produces the correct "Final Demand Report".
+* [ ] **ZIP Structure**: Your ZIP contains only the `src/` folder and `pom.xml`.
 
 ### Grading Criteria
 
-**Correctness**
-
+**Correctness (40 pts)**
 * Code must pass the hidden autograder tests on Gradescope.
+* Successful fulfillment must respect stock levels in `InventoryManager`.
 
-**Exception Chaining**
+**Exception Handling (20 pts)**
+* Proper preservation of the root cause in `FileProcessingException` (Exception Chaining).
+* Custom exceptions correctly extend `RuntimeException`.
 
-* Proper preservation of the root cause in `FileProcessingException`.
+**Collection Selection (20 pts)**
+* Proper use of `Queue` for FIFO processing in `OrderProcessor`.
+* Use of `Map` with null-safe methods (like `getOrDefault`) in `InventoryManager`.
 
-**Collection Selection**
-
-* Proper use of `Queue` for FIFO and `Map` for inventory.
-
-**Stream Efficiency**
-
-* Use of appropriate Stream API operations for analytics.
+**Stream Efficiency (20 pts)**
+* Use of appropriate Stream API operations (`distinct`, `sorted`, `groupingBy`) for analytics.
+* Analytics must reflect "Total Demand" (all validly imported orders) regardless of fulfillment status.
