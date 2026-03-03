@@ -80,31 +80,35 @@ src/main/java/ecommerce/exceptions/
 
 ### Step 1: Implement `OrderImporter.java`
 
-This class is responsible for reading **"dirty" CSV data** from src/main/resources/orders.csv.
+This class is responsible for reading **"dirty" CSV data** from `src/main/resources/orders.csv`.
 
 #### Try-with-resources
 
-* Use this to open a `BufferedReader`.
-* Catch `IOException` and rethrow it as `FileProcessingException`.
-* Pass the original error as the cause.
+- Use this to open a `BufferedReader`.
+- Catch `IOException` and rethrow it as `FileProcessingException`.
+- Pass the original error as the cause to support **Exception Chaining**.
 
 #### The Loop (Partial Success)
 
-* Read the file line by line.
-* Use a narrow try catch inside the loop.
-* Catch `InvalidOrderLineException`.
+- **Skip Header:** Call `reader.readLine()` once before entering the loop to skip the CSV header row.
+- Read the remaining file line by line.
+- Use a narrow `try-catch` block inside the loop to catch `InvalidOrderLineException`.
 
 #### Validation
 
-* If a row has missing fields or a negative quantity, throw `InvalidOrderLineException`.
+- Parse each line by splitting on the comma (`,`) delimiter.
+- If a row has missing fields (`length < 4`), throw an `InvalidOrderLineException`.
+- If the quantity is negative or zero, throw an `InvalidOrderLineException`.
+- If parsing the quantity fails (e.g., non-numeric data):
+  - Catch the `NumberFormatException`
+  - Rethrow it as an `InvalidOrderLineException`.
 
 #### Logging
 
-* When an exception is caught inside the loop:
+When an `InvalidOrderLineException` is caught inside the loop:
 
-  * Use `log.warn(...)`
-  * Allow the loop to continue processing.
-
+- Use `log.warn(...)` to log the failure message and the specific `orderId`.
+- Allow the loop to continue processing the next line.
 ---
 
 ## Section 4: Part 3 – Collections & Processing
@@ -174,6 +178,7 @@ Use:
 
 Return a `Map` of product names and their order counts.
 
+#### Note: The order of entries in a standard `HashMap` is not guaranteed. If you use `TreeMap` for the result, your output will be alphabetically sorted to match the example in the report below.
 ---
 
 ## Section 6: Part 5 – Testing & Submission
@@ -181,6 +186,8 @@ Return a `Map` of product names and their order counts.
 ### Step 1: Run the Main Application
 
 Open Main.java and click the green "Run" arrow. This file demonstrates the full end to end data pipeline. If implemented correctly, your console should display the following:
+
+#### Note: The order of entries in the "Total Demand" map may vary depending on your `Map` implementation. If you use `TreeMap`, your output will be alphabetically sorted as shown below.
 
 ```
 ==========================================
